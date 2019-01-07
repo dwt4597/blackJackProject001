@@ -8,7 +8,8 @@ public class BlackExec01 {
 	Scanner scan = new Scanner(System.in);
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("블랙잭 시작");
+		System.out.println("Blackjack Start!!");
+		System.out.println();
 		BlackService bs = new BlackService();
 		int index = 0;
 		bs.createCard1();
@@ -21,9 +22,9 @@ public class BlackExec01 {
 		bs.makeToScore();
 		bs.check___02();
 		
-		bs.dealerPrecondition(index);
-		bs.playerHit(index);
-		
+		index =bs.dealerPrecondition(index);
+		bs.playerPrecondition(index);
+		bs.battle();
 		
 		
 //		bs.dealerDeck();

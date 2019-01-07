@@ -5,151 +5,162 @@ import java.util.*;
 import com.biz.blackjack.vo.*;
 
 public class BlackService {
-
+	
+	//카드의 숫자, 모양, 알파벳을 저장할 List 3개.
 	List<String> numList;
 	List<String> moList;
 	List<String> alpaList;
-
+	
+	//shuffleDeck() 메서드로 실행되어,  
+	//카드(숫자 모양 알파벳 조합)을 랜덤으로 섞는다.
 	List<String> randomDeckList;
-
+	
+	//위의 랜덤으로 섞인 52장의 카드를
+	//플레이어의 덱과, 딜러의 덱으로 나누어 저장시킬 List.
 	List<String> player52Deck;
 	List<String> dealer52Deck;
-
+	
+	//자신(딜러)의 점수 보기, 승패를 결정할때 사용될
+	//딜러와 플레이어의 각자 카드의 점수를 저장할 List.
 	List<Integer> pscoreList;
 	List<Integer> dscoreList;
+	
+	//입력받기위한 Scanner함수
 	Scanner scan;
-
+	
+	//생성자 부분. 
 	public BlackService() {
-		// 배열을 List 객체형으로 변환
+		
+		// 배열을 List 객체형으로 변환.
+		// 각각의 클래스에 배열타입으로 값을 저장시키고
+		// 초기화해주었다.
 		numList = Arrays.asList(number.num);
 		moList = Arrays.asList(moyang.design);
 		alpaList = Arrays.asList(alpa.design);
+		
+		//randomDeckList를 ArrayList()로 초기화
 		randomDeckList = new ArrayList();
-
+		
+		//player52Deck,dealer52Deck를 ArrayList()로 초기화
 		player52Deck = new ArrayList();
 		dealer52Deck = new ArrayList();
-
+		
+		//pscoreList,dscoreList를 ArrayList()로 초기화
 		pscoreList = new ArrayList();
 		dscoreList = new ArrayList();
+		
+		//Scanner함수를 초기화.
 		scan = new Scanner(System.in);
 	}
-
+	
+	//숫자_모양 형식의 카드를 만드는 매서드이다.
 	public void createCard1() {
+		
+		//num 클래스에 담겨있는 숫자들을 String형 변수 n에 대입
 		for (String n : numList) {
+			
+			//moyang 클래스에 담겨있는 숫자들을 String형 변수 m에 대입
 			for (String m : moList) {
+				
+				//각 카드들을 숫자_모양 형식으로 card(스트링형)변수에
+				//담는다. 나중에 split할때, 10이 오류가나서(2자리로읽는듯)
+				// ""에서 "_"으로 바꿨다 (split할때 구분의 기준)
 				String card = n + "_" + m;
+				
+				//randomDeckList에 저장한다.
 				randomDeckList.add(card);
 			}
 		}
 	}
-
+	//알파벳_모양 형식의 카드를 만드는 매서드이다.
 	public void createCard2() {
+		
+		//alpa 클래스에 담겨있는 숫자들을 String형 변수 a에 대입
 		for (String a : alpaList) {
+			
+			//alpa 클래스에 담겨있는 숫자들을 String형 변수 a에 대입
 			for (String n : moList) {
+				
+				//각 카드들을 알파벳_모양 형식으로 card(스트링형)변수에 저장한다.
 				String card = a + "_" + n;
+				
+				//randomDeckList에 저장한다.
 				randomDeckList.add(card);
 			}
 		}
 	}
 
+	//덱을 섞는 메서드이다.
 	public void shuffleDeck() {
+		
+		//기존의 저장되었던 카드들의 List의 사이즈를 size변수에 저장.
 		int size = randomDeckList.size();
+		
+		//사이즈만큼, randomDeckList를 shuffle한다.
 		for (int i = 0; i < size; i++) {
 			Collections.shuffle(randomDeckList);
 		}
 	}
 
 	// P와 D 각각 52장씩 랜덤하게 순차적으로 뽑게함.
+	//BlackExec01(실행시키는 클래스)에서
+	//index는 0으로 설정되어있다.
+	//매개변수 index ( 0 )을 받아옴.
 	public int divide52Deck(int index) {
-
+		
+		//'딜러와 게이머는 순차적으로 카드를 하나씩 뽑아, 
+		//각자 2개의 카드를 소지'이므로 for문의 조건을 2로(0,1)한다.
 		for (int i = 0; i < 2; i++) {
+			
+			//player52Deck,dealer52Deck에 randomDeckList에 저장된 값들을
+			//분배하여 저장시킨다. 여기서 randomDeckList의 
+			//저장된 값 순번들은 index값을 1씩 증가시키며,
+			//각각 중복이 되지 않도록 분배시킨다.
 			player52Deck.add(randomDeckList.get(index++));
 			dealer52Deck.add(randomDeckList.get(index++));
 		}
-
+		//BlackExec01(실행시키는 클래스)에서 index변수에
+		//저장시킨다. return index로.
 		return index;
 	}
 
-	// P와 D의 각각 52장 카드가, 서로 랜덤한 카드들인지 확인
+	// Player와 Dealer의 각각 52장 카드가, 
+	// 서로 랜덤한 카드들인지 확인하는 메서드.
 	public void check___01() {
+		
+		System.out.print("Player Card = ");
+		//player52Deck를 String s변수에 대입한다.
 		for (String s : player52Deck) {
-			System.out.print("Player Card:"+ s+"\t");
+			//s의 값을 출력한다.
+			System.out.print("|"+ s+"|");
 		}
 		System.out.println();
+		
+		System.out.print("Dealer Card = ");
+		//dealer52Deck를 String s변수에 대입한다.
 		for (String s : dealer52Deck) {
-			System.out.print("Dealer Card:" + s+"\t");
+			//s의 값을 출력한다.
+			System.out.print("|" + "#_#"+"|");
 		}
 		System.out.println();
 		System.out.println();
 	}
-
-	public void makeToScore() {
-		for (String s : player52Deck) {
-			int score = splitScore(s);
-			pscoreList.add(score);
-		}
-		for (String s : dealer52Deck) {
-			int score = splitScore(s);
-			dscoreList.add(score);
-		}
-
-	}
-
-	public void check___02() {
-		System.out.println("각 카드 점수");
+	
+	public int splitScore(String s) {
+		//카드를 "_"단위로 쪼개어, card에 배열형태로 저장한다.
+		String[] card = s.split("_");
 		
-			System.out.print(pscoreList);
+		//문자열로 저장되어있는 숫자들과
+		//알파벳들을 숫자형으로 return하고
+		// int형 cardScore 변수에 저장한다.
+		int cardScore = converter(card[0]);
 		
-		System.out.println();
-		
-			System.out.print(dscoreList);
-			
-		
-		System.out.println();
-		System.out.println();
+		//변환된 '값'을 return한다.
+		return cardScore;
 	}
-	public void dealerPrecondition(int index) {
-		int sum = 0;
-		for(int i = 0; i < dscoreList.size(); i++) {
-			int a = dscoreList.get(i);
-			sum += a;
-
-		}
-		if(sum<=16) {
-			System.out.println("딜러카드가 16점이하. 1장 Hit");
-			int s = splitScore(randomDeckList.get(index++));
-			dscoreList.add(s);
-		} else if ( sum >=17) {
-			System.out.println("딜러카드 17점 이상. Stand");
-		}
-			
-		System.out.println(dscoreList);
-	}
-	public void playerHit(int index) {
-
-		while (true) {
-			System.out.println("Hit?? (1.Hit || 2.Stand)");
-			String select = scan.nextLine();
-
-			if (select.equals("1")) {
-				int s = splitScore(randomDeckList.get(index++));
-				pscoreList.add(s);
-				for (int a : pscoreList) {
-					System.out.print(a + " ");
-				}
-			} else if (select.equals("2")) {
-				battle();
-			}
-
-		}
-	}
-
-
-
-	private void battle() {
-
-	}
-
+	
+	//알파벳과 문자열로된 숫자를
+	//int형 숫자로 변환한다.
 	public int converter(String s) {
 		if (s.equals("A")) {
 			return 1;
@@ -160,34 +171,220 @@ public class BlackService {
 		} else if (s.equals("J")) {
 			return 10;
 		} else {
+			//문자열의 숫자를, int형 숫자로 변환 후
+			//숫자를 return한다.
 			int a = Integer.valueOf(s);
 			return a;
 		}
 	}
 
-	public int splitScore(String s) {
+	
+	
+	//카드들을 split으로 분리하고, 
+	//알파벳과 문자열 숫자를 숫자로 변환, int타입으로  변환한다.
+	public void makeToScore() {
+		
+		//player52Deck을 문자열 s변수에 대입
+		for (String s : player52Deck) {
+			
+			//splitScore()에 s를 매개변수로 보낸 후,
+			// int형 score로 받는다.
+			int score = splitScore(s);
+			
+			//pscoreList에 score을 저장한다.
+			pscoreList.add(score);
+		}
+		
+		//dealer52Deck을 문자열 s변수에 대입
+		for (String s : dealer52Deck) {
+			
+			//splitScore()에 s를 매개변수로 보낸 후,
+			// int형 score로 받는다.
+			int score = splitScore(s);
+			//dscoreList에 score을 저장한다.
+			dscoreList.add(score);
+		}
 
-		String[] card = s.split("_");
-		int cardScore = converter(card[0]);
-		return cardScore;
 	}
-	// boolean flag = true;
-	// int size = randomDeckList.size();
-	// for (int i = 0; i < size; i++) {
-	// if (flag == true) {
-	// shuffleDeck();
-	// String pgetCard = randomDeckList.get(i);
-	// player52Deck.add(pgetCard);
-	// flag = false;
-	// }
-	// if (flag == false) {
-	// shuffleDeck();
-	// String dgetCard = randomDeckList.get(i);
-	// dealer52Deck.add(dgetCard);
-	// flag = true;
-	// }
-	//
-	// }
+
+	//Player와 Dealer의 카드와 점수를 확인시켜주는 매서드.
+	public void check___02() {
+		System.out.println(" 카드 점수 ");
+		
+			//예)Player Card =[7, 10] 형태로 보여준다.
+			System.out.print("Player Card =" + pscoreList);
+		
+		System.out.println();
+			//Dealer Card =[ #, # ] 형태로 보여준다.
+			System.out.print("Dealer Card =" + "[ #, # ] ");
+			
+		
+		System.out.println();
+		System.out.println();
+	}
+	//'딜러는 합계점수가 16점 이하이면 반드시 1장을 추가(17점이상이면 추가X)를
+	//하는 딜러의 조건 메서드이다.
+	public int dealerPrecondition(int index) {
+		
+		//합계를 계산하기위해 dscoreList의 점수들의 합계를 sum함수에 저장한다.
+		//2장의 카드를 변환한 점수 2개(카드2개의 점수)가 dscoreList에 저장되어있음.
+		int sum = 0;
+		for(int i = 0; i < dscoreList.size(); i++) {
+			int a = dscoreList.get(i);
+			sum += a;
+
+		}
+		//합계(sum변수)이 16점 이상이면, 1장을 추가로 받는다.
+		if(sum<=16) {
+			System.out.println("(딜러카드가 16점이하.. 1장 Hit 했습니다.)");
+			
+			//randomDeckList에서 새로운 카드를 받고,
+			//값을 구하는 매서드(splitScore())을 실행시킨다음
+			//return된 값을 int형 변수 s에 저장한다.
+			int s = splitScore(randomDeckList.get(index++));
+			
+			//조건의 새로 추가된 카드값을 , 기존의 2개의 값이있는 
+			//dscoreList에 추가한다.
+			dscoreList.add(s);
+			
+			// sum이 17이상이면, 별다른 실행시킬게 없으므로
+			// 그 상태로 메서드를 끝낸다.
+		} else if ( sum >=17) {
+			System.out.println("(딜러카드 17점 이상.. Stand 했습니다.)");
+		}
+		System.out.println();
+		
+		//Dealer의 카드를 볼 수 있는 문장을 추가.
+		System.out.println("1.Dealer Card보기 , press Any Key. 안보기");
+		
+		//키보드로부터 문자열 s변수에 값을 입력받는다.
+		String s = scan.nextLine();
+		
+		//1을 입력받았을 경우, 딜러의 카드를 보여준다. 
+		//다른 입력일 경우, 그냥 넘어간다.
+		if(s.equals("1")) {
+		System.out.println("Dealer Card =" + dscoreList);
+		} else{
+			System.out.println();
+		}
+		return index;
+	}
+	
+	//'게이머는 얼마든지 카드를 추가로 뽑을 수 있다.'를 수행하는 매서드
+	public void playerPrecondition(int index) {
+
+		while (true) {
+			System.out.println();
+			//나의 카드를 보여준 뒤, 카드를 추가로 뽑을지, 승패를 결정하는
+			//게임으로 넘어갈지 결정한다.
+			System.out.println("내 카드" + pscoreList);
+			System.out.println("Hit?? (1.Hit || 2.Stand)");
+			String select = scan.nextLine();
+			//입력받은 값이 1일 경우, 
+			//randomDeckList에서 새로운 카드를 받고,
+			//값을 구하는 매서드(splitScore())을 실행시킨다음
+			//return된 값을 int형 변수 s에 저장한다.
+			if (select.equals("1")) {
+				int s = splitScore(randomDeckList.get(index++));
+				//조건의 새로 추가된 카드값을 , 기존의 2개의 값이있는 
+				//pscoreList에 추가한다.
+				pscoreList.add(s);
+				
+				//pscoreList에 저장된 값(기존의 2장, hit해서 새로받은 1장의 값)
+				//을 보여준다.
+				for (int a : pscoreList) {
+					System.out.print(a + " ");
+				}
+				//2일 경우, 
+				//승패 결과를 위한 battel()메서드를 실행한다.
+			} else if (select.equals("2")) {
+				battle();
+				break;
+			}
+
+		}
+	}
+
+	//플레이어와 딜러의 점수들이 저장된 List(pscoreList,dscoreList)로
+	//게임의 승패를 결정한다.
+	public void battle() {
+		int dealerCardSum = 0;
+		int playerCardSum = 0;
+		
+		//플레이어의 카드들( 2장, 혹은 3장의 값)을 합산하여
+		//playerCardSum 변수에 저장한다.(위에서 int형, 0값으로 초기화된)
+		for(int p : pscoreList) {
+			playerCardSum += p;
+		}
+		
+		//딜러의 카드들( 2장, 혹은 3장의 값)을 합산하여
+		//dealerCardSum 변수에 저장한다.(위에서 int형, 0값으로 초기화된)
+		for(int d : dscoreList) {
+			dealerCardSum += d;
+		}
+		
+		//'21을 초과하면 무조건 초과한 쪽이 게임에서 진다'
+		//라는 조건을 만족시키기위한 if문
+		if(playerCardSum>21) {
+			System.out.println("Dealer Card = "+ dscoreList);
+			System.out.println("Player Card = "+ pscoreList);
+			System.out.println("Bust! Player 패배, Dealer 승리");
+			
+			return;
+		}
+		
+		//'21을 초과하면 무조건 초과한 쪽이 게임에서 진다'
+		//라는 조건을 만족시키기위한 조건문
+		if(dealerCardSum>21) {
+			System.out.println("Dealer Card = "+ dscoreList);
+			System.out.println("Player Card = "+ pscoreList);
+			System.out.println("Bust! Dealer 패배, Player 승리");
+			
+			return;
+		}
+		
+		//'딜러와 게이머중 소유한 카드의 합이 21에 가장 가까운쪽이 
+		//승리한다'는 조건을 만족시키기위한 조건문.
+		
+		//위의 조건들을 다 만족하고 왔을 경우,
+		// 각자의 카드의 합들이 21을 초과하지 않으므로
+		//dealerCardSum이 큰 경우, Dealer Win을 출력
+		// 아닐경우, 는 playerCardSum이 큰 경우이므로
+		//Player Win을 출력.
+		if(playerCardSum<dealerCardSum) {
+			System.out.println("Dealer Card = "+ dscoreList);
+			System.out.println("Player Card = "+ pscoreList);
+			System.out.println("Dealer Win");
+			return;
+		} else {
+			System.out.println("Dealer Card = "+ dscoreList);
+			System.out.println("Player Card = "+ pscoreList);
+			System.out.println("Player Win");
+			return;
+		}
+		
+		
+		
+	}
+
+	
+//	 boolean flag = true;
+//	 int size = randomDeckList.size();
+//	 for (int i = 0; i < size; i++) {
+//	 if (flag == true) {
+//	 shuffleDeck();
+//	 String pgetCard = randomDeckList.get(i);
+//	 player52Deck.add(pgetCard);
+//	 flag = false;
+//	 }
+//	 if (flag == false) {
+//	 shuffleDeck();
+//	 String dgetCard = randomDeckList.get(i);
+//	 dealer52Deck.add(dgetCard);
+//	 flag = true;
+//	 }
+//	
+//	 }
 	/*
 	 * while (true) { System.out.println("HIT?? (1.Hit || 2.Stand"); String select =
 	 * scan.nextLine(); int selection = Integer.valueOf(select); if (selection == 1)
